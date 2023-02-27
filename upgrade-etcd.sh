@@ -19,7 +19,7 @@ rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
 /tmp/etcd-download-test/etcd --version
 /tmp/etcd-download-test/etcdctl version
 
-# mv binaries to PATH
+# Move binaries to PATH
 sudo mv /tmp/etcd-download-test/etcd* /usr/local/bin/
 
 # Restart etcd service
@@ -31,3 +31,17 @@ sudo systemctl status etcd
 # Verify etcd versions
 etcdctl version
 etcd --version
+
+UPGRADE_VERSION=$(echo $ETCD_VER | sed 's/^.//') # Remove 'v' prefix from $ETCD_VER
+CURRENT_VERSION=$(etcd --version | (read var1 var2 var3; echo $var3))
+
+# If Statement to Compare ETCD Versions
+if [[ $UPGRADE_VERSION == $CURRENT_VERSION ]]
+then
+        echo -e "\nUpgrade Successful!\n"
+else
+        echo -e "\nUpgrade Unsuccessful :(\n"
+fi
+
+echo "Upgrade version: $UPGRADE_VERSION"
+echo "Current version: $CURRENT_VERSION"
