@@ -29,11 +29,13 @@ sudo mv /tmp/etcd-download-test/etcd* /usr/local/bin/
 sudo systemctl status etcd
 
 # Verify etcd versions
-etcdctl version
-etcd --version
-
 UPGRADE_VERSION=$(echo $ETCD_VER | sed 's/^.//') # Remove 'v' prefix from $ETCD_VER
 CURRENT_VERSION=$(etcd --version | (read var1 var2 var3; echo $var3))
+CURRENT_ETCDCTL_VERSION=$(etcdctl version)
+
+echo -e "\nUpgrade version: $UPGRADE_VERSION"
+echo "Current version: $CURRENT_VERSION"
+echo "$CURRENT_ETCDCTL_VERSION"
 
 # If Statement to Compare ETCD Versions
 if [[ $UPGRADE_VERSION == $CURRENT_VERSION ]]
@@ -43,5 +45,3 @@ else
         echo -e "\nUpgrade Unsuccessful :(\n"
 fi
 
-echo "Upgrade version: $UPGRADE_VERSION"
-echo "Current version: $CURRENT_VERSION"
