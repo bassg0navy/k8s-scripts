@@ -22,10 +22,10 @@ rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
 # Move binaries to PATH
 sudo mv /tmp/etcd-download-test/etcd* /usr/local/bin/
 
-# Restart etcd service
+# Restart etcd
 {   sudo systemctl daemon-reload;   sudo systemctl enable etcd;   sudo systemctl start etcd; }
 
-# Verify etcd service is running
+# Verify etcd is running
 sudo systemctl status etcd
 
 # Verify etcd versions
@@ -40,8 +40,8 @@ echo "$CURRENT_ETCDCTL_VERSION"
 # If Statement to Compare ETCD Versions
 if [[ $UPGRADE_VERSION == $CURRENT_VERSION ]]
 then
-        echo -e "\nUpgrade Successful!\n"
+        echo -e "\n Upgrade Successful! 👍🏽  \n"
 else
-        echo -e "\nUpgrade Unsuccessful :(\n"
+        echo -e "\n Upgrade Unsuccessful 💩 \n"
 fi
 
