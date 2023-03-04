@@ -29,7 +29,12 @@ KUBE_APISERVER_VERSION=$(kube-apiserver --version | (read v1 v2; echo $v2))
 KUBE_CONTROLLER_MANAGER_VERSION=$(kube-controller-manager --version | (read v1 v2; echo $v2))
 KUBE_SCHEDULER_VERSION=$(kube-scheduler --version | (read v1 v2; echo $v2))
 KUBECTL_VERSION=$(kubectl version -ojson | jq -r .clientVersion.gitVersion)
-VERSION_ARRAY=($KUBE_APISERVER_VERSION $KUBE_CONTROLLER_MANAGER_VERSION $KUBE_SCHEDULER_VERSION $KUBECTL_VERSION)
+declare -A assArray2=( [HDD]=Samsung [Monitor]=Dell [Keyboard]=A4Tech )
+
+declare -A VERSION_ARRAY=( [kube-apiserver]=$KUBE_APISERVER_VERSION \
+    [kube-controller-manager]=$KUBE_CONTROLLER_MANAGER_VERSION \
+    [kube-scheduler]=$KUBE_SCHEDULER_VERSION \
+    [kubectl]=$KUBECTL_VERSION )
 
 # Verify versions
 echo -e "\n"
@@ -42,15 +47,26 @@ echo "kubectl version:" $(kubectl version -ojson | jq -r .clientVersion.gitVersi
 
 
 # Determine success
-for service_version in "${VERSION_ARRAY[@]}" 
+for key value in "${(kv)VERSION_ARRAY[@]}" 
 do
-	if [[ $service_version == $K8S_VERSION ]]
+	if [[ $value == $K8S_VERSION ]]
 	then
-		for service in kube-apiserver kube-controller-manager kube-scheduler;
-		do
-			echo -e "$service version:" $($service --version) "Successful! 👍🏽  \n"
- 		done
+            echo -e "$key version:" $value "Successful! 👍🏽  \n"
 	else
-        	echo -e "\n $service_version Upgrade Unsuccessful 💩 \n"
+        	echo -e "\n $key version:" $value "Upgrade Unsuccessful 💩 \n"
 	fi
 done
+
+
+# for service_version in "${VERSION_ARRAY[@]}" 
+# do
+# 	if [[ $service_version == $K8S_VERSION ]]
+# 	then
+# 		for service in kube-apiserver kube-controller-manager kube-scheduler;
+# 		do
+# 			echo -e "$service version:" $($service --version) "Successful! 👍🏽  \n"
+#  		done
+# 	else
+#         	echo -e "\n $service_version Upgrade Unsuccessful 💩 \n"
+# 	fi
+# done
