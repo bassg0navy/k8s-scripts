@@ -9,30 +9,32 @@ GITHUB_URL=https://github.com/etcd-io/etcd/releases/download
 DOWNLOAD_URL=${GOOGLE_URL}/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64
 
 # Download binaries
-for service in $CONTROLLER_SERVICES;
+for service in "${CONTROLLER_SERVICES[@]}";
 do 
-    wget -q --show-progress --https-only --timestamping \
-    ${DOWNLOAD_URL}/${service}
-    # Clear tmp dir
-    # rm -f /tmp/${service}-${K8S_VERSION}-linux-amd64.tar.gz \
-    # rm -rf /tmp/${service}-download-test && mkdir -p /tmp/${service}-download-test
+    wget -q --show-progress --https-only --timestamping ${DOWNLOAD_URL}/$service
 done
 
+#wget -q --show-progress --https-only --timestamping \
+ # ${DOWNLOAD_URL}/kube-apiserver \
+ # ${DOWNLOAD_URL}/kube-controller-manager \
+ # ${DOWNLOAD_URL}/kube-scheduler \
+ # ${DOWNLOAD_URL}/kubectl
+
 # Install binaries to /usr/local/bin
-{
-  chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
-  sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
-}
+chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 
 # Start controller services
-{
-  sudo systemctl daemon-reload
-  sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
-  sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
-}
+sudo systemctl daemon-reload
+sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
+sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler
+#sudo systemctl status kube-apiserver kube-controller-manager kube-scheduler
 
-# wget -q --show-progress --https-only --timestamping \
-#   ${DOWNLOAD_URL}/kube-apiserver \
-#   ${DOWNLOAD_URL}/kube-controller-manager \
-#   ${DOWNLOAD_URL}/kube-scheduler \
-#   ${DOWNLOAD_URL}/kubectl
+# Verify versions
+for service in kube-apiserver kube-controller-manager kube-scheduler;
+do
+	$service --version
+done
+kubectl version
+#kube-apiserver version; kube-controller-manager version; kube-scheduler version; kubectl version
+
