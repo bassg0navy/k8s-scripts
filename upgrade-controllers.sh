@@ -24,13 +24,33 @@ sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler
 #sudo systemctl status kube-apiserver kube-controller-manager kube-scheduler
 
+# Declare versions
+KUBE_APISERVER_VERSION=$(kube-apiserver --version | (read v1 v2; echo $v2))
+KUBE_CONTROLLER_MANAGER_VERSION=$(kube-controller-manager --version | (read v1 v2; echo $v2))
+KUBE_SCHEDULER_VERSION=$(kube-scheduler --version | (read v1 v2; echo $v2))
+KUBECTL_VERSION=$(kubectl version -ojson | jq -r .clientVersion.gitVersion)
+VERSION_ARRAY=($KUBE_APISERVER_VERSION $KUBE_CONTROLLER_MANAGER_VERSION $KUBE_SCHEDULER_VERSION $KUBECTL_VERSION)
+
 # Verify versions
+echo -e "\n"
 for service in kube-apiserver kube-controller-manager kube-scheduler;
 do
-	{$service}_version=$service --version
-    echo ${service}_version
-    echo ${kube-apiserver_version}
+	echo "$service version:" $($service --version)
 done
-kubectl version
-#kube-apiserver version; kube-controller-manager version; kube-scheduler version; kubectl version
 
+echo "kubectl version:" $(kubectl version -ojson | jq -r .clientVersion.gitVersion)
+
+
+# Determine success
+for service_version in "${VERSION_ARRAY[@]}" 
+do
+	if [[ $service_version == $K8S_VERSION ]]
+	then
+		for service in kube-apiserver kube-controller-manager kube-scheduler;
+		do
+			echo -e "$service version:" $($service --version) "Successful! 👍🏽  \n"
+ 		done
+	else
+        	echo -e "\n $service_version Upgrade Unsuccessful 💩 \n"
+	fi
+done
