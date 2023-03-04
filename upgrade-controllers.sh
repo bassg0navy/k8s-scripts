@@ -14,12 +14,6 @@ do
     wget -q --show-progress --https-only --timestamping ${DOWNLOAD_URL}/$service
 done
 
-#wget -q --show-progress --https-only --timestamping \
- # ${DOWNLOAD_URL}/kube-apiserver \
- # ${DOWNLOAD_URL}/kube-controller-manager \
- # ${DOWNLOAD_URL}/kube-scheduler \
- # ${DOWNLOAD_URL}/kubectl
-
 # Install binaries to /usr/local/bin
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
@@ -33,7 +27,9 @@ sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler
 # Verify versions
 for service in kube-apiserver kube-controller-manager kube-scheduler;
 do
-	$service --version
+	{$service}version=$service --version
+    echo ${service}_version
+    echo ${kube-apiserver_version}
 done
 kubectl version
 #kube-apiserver version; kube-controller-manager version; kube-scheduler version; kubectl version
