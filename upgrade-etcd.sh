@@ -37,7 +37,7 @@ echo -e "\nUpgrade version: $UPGRADE_VERSION"
 echo "Current version: $CURRENT_VERSION"
 echo "$CURRENT_ETCDCTL_VERSION"
 
-# If Statement to Compare ETCD Versions
+# Compare ETCD Versions
 if [[ $UPGRADE_VERSION == $CURRENT_VERSION ]]
 then
         echo -e "\n Upgrade Successful! 👍🏽  \n"
