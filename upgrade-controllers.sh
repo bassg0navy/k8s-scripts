@@ -27,7 +27,7 @@ sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler
 # Verify versions
 for service in kube-apiserver kube-controller-manager kube-scheduler;
 do
-	{$service}version=$service --version
+	{$service}_version=$service --version
     echo ${service}_version
     echo ${kube-apiserver_version}
 done
