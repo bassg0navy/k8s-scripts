@@ -7,6 +7,7 @@ DOWNLOAD_URL=${GOOGLE_URL}/kubernetes-release/release/${TARGET_VERSION}/bin/linu
 CONTROLLER_SERVICES=(kube-apiserver kube-controller-manager kube-scheduler kubectl)
 NEW_LINE=$(echo -e "\n")
 UPGRADE_LOG=/tmp/controller-upgrade-error.log
+GREEN='\033[0;32m'
 
 # Rotate old log
 truncate -s 0 $UPGRADE_LOG
@@ -32,7 +33,7 @@ sudo systemctl status --full kube-apiserver kube-controller-manager kube-schedul
 
 if $SERVICES_RESTARTED_SUCCESSFULLY
 then
-    echo -e "All services restarted successfully!\n"
+    echo -e "All services restarted""$GREEN successfully""!\n"
 else
     echo -e "Service restarts unsuccessful. Please check $UPGRADE_LOG for more information\n"
 fi
