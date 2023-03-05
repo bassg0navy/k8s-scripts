@@ -8,7 +8,7 @@ CONTROLLER_SERVICES=(kube-apiserver kube-controller-manager kube-scheduler kubec
 NEW_LINE=$(echo -e "\n")
 UPGRADE_LOG=/tmp/controller-upgrade-error.log
 
-# Truncate old log
+# Rotate old log
 truncate -s 0 $UPGRADE_LOG
 
 # Download binaries
@@ -28,6 +28,7 @@ echo "========== Restarting Controller Services =========="
 RESTART_SERVICES=$(sudo systemctl daemon-reload && \
 sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler && \
 sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler && \
+sleep 10 && \
 sudo systemctl status --full kube-apiserver kube-controller-manager kube-scheduler &> $UPGRADE_LOG)
 
 if [[ $RESTART_SERVICES ]]
