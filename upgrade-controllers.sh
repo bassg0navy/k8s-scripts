@@ -24,14 +24,13 @@ sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local
 $NEW_LINE
 
 # Start controller services
-$NEW_LINE
 echo "========== Restarting Controller Services =========="
-RESTART_SERVICES=$(sudo systemctl daemon-reload && \
+SERVICES_RESTARTED_SUCCESSFULLY=$(sudo systemctl daemon-reload && \
 sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler && \
 sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler && \
 sudo systemctl status --full kube-apiserver kube-controller-manager kube-scheduler &> $UPGRADE_LOG)
 
-if [[ $RESTART_SERVICES ]]
+if $SERVICES_RESTARTED_SUCCESSFULLY
 then
     echo -e "All services restarted successfully!\n"
 else
