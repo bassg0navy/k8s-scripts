@@ -2,6 +2,7 @@
 
 K8S_VERSION="v1.24.0"
 CONTROLLER_SERVICES=(kube-apiserver kube-controller-manager kube-scheduler kubectl)
+NEW_LINE=$(echo -e "\n")
 
 # Choose either URL
 GOOGLE_URL=https://storage.googleapis.com
@@ -14,15 +15,15 @@ do
     wget -q --show-progress --https-only --timestamping ${DOWNLOAD_URL}/$service
 done
 
-# Install binaries to /usr/local/bin
+# Install binaries
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 
 # Start controller services
-sudo systemctl daemon-reload
-sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
-sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler
-#sudo systemctl status kube-apiserver kube-controller-manager kube-scheduler
+sudo systemctl daemon-reload && \
+sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler && \
+sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler && \
+sudo systemctl status kube-apiserver kube-controller-manager kube-scheduler > /dev/null
 
 # Declare versions
 KUBE_APISERVER_VERSION=$(kube-apiserver --version | (read v1 v2; echo $v2))
@@ -35,18 +36,9 @@ declare -A VERSION_ARRAY=( [kube-apiserver]=$KUBE_APISERVER_VERSION \
     [kube-scheduler]=$KUBE_SCHEDULER_VERSION \
     [kubectl]=$KUBECTL_VERSION )
 
-# Verify versions
-echo -e "\n"
-for service in kube-apiserver kube-controller-manager kube-scheduler;
-do
-	echo "$service version:" $($service --version)
-done
-
-echo "kubectl version:" $(kubectl version -ojson | jq -r .clientVersion.gitVersion)
-
+$NEW_LINE
 
 # Determine success
-echo -e "\n"
 for service in "${!VERSION_ARRAY[@]}"; 
 do
 	if [[ ${VERSION_ARRAY[$service]} == $K8S_VERSION ]]
@@ -56,4 +48,5 @@ do
         	echo -e "\n $service version:" ${VERSION_ARRAY[$service]} "Upgrade Unsuccessful 💩 "
 	fi
 done
-echo -e "\n"
+
+$NEW_LINE
