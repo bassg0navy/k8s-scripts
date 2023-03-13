@@ -13,6 +13,9 @@ WHITE='\033[0m'
 # Rotate old log
 truncate -s 0 $UPGRADE_LOG
 
+# Download Dependencies
+sudo apt install -y jq
+
 # Download binaries
 for service in "${CONTROLLER_SERVICES[@]}";
 do 
